@@ -9,6 +9,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _controller = TextEditingController();
   List tareas = [
     ['Task 1', false],
     ['Task 2', false],
@@ -19,6 +20,19 @@ class _HomePageState extends State<HomePage> {
   void checkBoxChanged(int index) {
     setState(() {
       tareas[index][1] = !tareas[index][1];
+    });
+  }
+
+  void guardarTarea() {
+    setState(() {
+      tareas.add([_controller.text, false]);
+      _controller.clear();
+    });
+  }
+
+  void deleteTarea(int index) {
+    setState(() {
+      tareas.removeAt(index);
     });
   }
 
@@ -40,8 +54,35 @@ class _HomePageState extends State<HomePage> {
               nombretarea: tareas[index][0],
               tareacompletada: tareas[index][1],
               onChanged: (value) => checkBoxChanged(index),
+              deteleFunction: (contex) => deleteTarea(index),
             );
           }),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          children: [
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                    hintText: 'Agregar tarea',
+                    filled: true,
+                    fillColor: const Color.fromARGB(255, 241, 115, 115),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: const Color.fromARGB(255, 243, 24, 9)),
+                        borderRadius: BorderRadius.circular(15))),
+              ),
+            )),
+            FloatingActionButton(
+              onPressed: guardarTarea,
+              child: Icon(Icons.add),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
